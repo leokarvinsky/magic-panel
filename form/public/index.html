@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Formularz zwrotu</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+</head>
+
+<body>
+  <header>
+    <nav class="gerlach-navbar">
+      <div class="logo">
+        <img src="https://gerlach.pl/img/logo-1662320706.jpg" alt="Gerlach Logo" />
+      </div>
+    </nav>
+  </header>
+
+  <div class="app">
+    <header class="app-header">
+      <h1>Formularz zwrotu i reklamacji</h1>
+      <p>Prosty proces w 5 krokach. Zajmie Ci to tylko kilka minut.</p>
+    </header>
+
+    <div class="progress-bar">
+      <div class="progress-step progress-step-active" data-index="0" data-title="Zam.">1</div>
+      <div class="progress-step" data-index="1" data-title="Produkty">2</div>
+      <div class="progress-step" data-index="2" data-title="Kontakt">3</div>
+      <div class="progress-step" data-index="3" data-title="Podsum.">4</div>
+      <div class="progress-step" data-index="4" data-title="Potwierdz.">5</div>
+    </div>
+
+    <main class="step-container">
+      <section id="step-1" class="step active section-card">
+        <div class="form-group">
+            <label for="orderId">Numer zamówienia</label>
+            <input type="text" id="orderId" placeholder="Wpisz numer zamówienia" />
+        </div>
+        <div class="form-group">
+            <label for="email">E-mail użyty przy zamówieniu</label>
+            <input type="email" id="email" placeholder="Wpisz e-mail" />
+        </div>
+        <button id="checkBtn" class="btn">Sprawdź</button>
+        <div id="loader" class="loader hidden"></div>
+        <p id="message" class="message"></p>
+      </section>
+
+      <section id="step-2" class="step section-card">
+        <h2>Zgłoszenie zwrotu/reklamacji</h2>
+        <div class="order-header">
+          Numer zamówienia: <span id="orderNumberDisplay"></span>
+        </div>
+        <form id="productsForm">
+          
+          <!-- Wybór typu zgłoszenia -->
+          <div class="form-group type-selection">
+            <label for="claimType">Typ zgłoszenia *</label>
+            <select id="claimType" required>
+              <option value="">-- Wybierz --</option>
+              <option value="return">Zwrot</option>
+              <option value="complaint">Reklamacja</option>
+            </select>
+          </div>
+
+          <div id="productsSection" class="hidden">
+            <h3 class="section-title" id="productsSectionTitle">Wybierz produkty</h3>
+            <div id="productsList" class="products-list"></div>
+            
+            <div class="form-group">
+              <label for="comment">
+                  Komentarz
+                  <i class="fas fa-info-circle info-icon" data-tooltip="Jeśli zwracasz tylko część zestawu, prosimy o szczegółowe opisanie, który element zestawu jest zwracany."></i>
+              </label>
+              <textarea id="comment" placeholder="Wpisz dodatkowe uwagi (opcjonalnie)"></textarea>
+            </div>
+
+            <!-- Sekcja ZWROT -->
+            <div id="returnSection" class="hidden">
+              <div class="reason-selection form-group">
+                <label for="reason">Wybierz powód zwrotu *</label>
+                <select id="reason">
+                  <option value="">-- Wybierz --</option>
+                  <option value="nie_odpowiada">Nie odpowiada mi</option>
+                  <option value="pomylka">Zakup przez pomyłkę</option>
+                  <option value="bez_przyczyny">Bez podania przyczyny</option>
+                  <option value="niezgodny_opis">Niezgodny z opisem</option>
+                  <option value="nie_dotarl_czas">Nie dotarł na czas</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Sekcja REKLAMACJA -->
+            <div id="complaintSection" class="hidden">
+              <!-- Info box o powiadomieniu -->
+              <div class="complaint-info-box">
+                <div class="icon">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                <div class="content">
+                  <h4>Powiadomienie o decyzji</h4>
+                  <p>Po rozpatrzeniu Twojej reklamacji zostaniesz powiadomiony o decyzji drogą mailową.</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="defectDescription">
+                  Opis wady *
+                  <i class="fas fa-info-circle info-icon" data-tooltip="Szczegółowo opisz problem z produktem."></i>
+                </label>
+                <textarea id="defectDescription" placeholder="Opisz wadę produktu..." rows="4"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="serialNumber">
+                  Numer seryjny (jeśli dotyczy)
+                  <i class="fas fa-info-circle info-icon" data-tooltip="Jeśli produkt posiada numer seryjny, podaj go tutaj."></i>
+                </label>
+                <input type="text" id="serialNumber" placeholder="Wpisz numer seryjny">
+              </div>
+
+              <div class="form-group">
+                <label for="defectPhotos">
+                  Zdjęcia wady
+                  <i class="fas fa-info-circle info-icon" data-tooltip="Możesz dodać maksymalnie 5 zdjęć (każde max 5MB). Akceptowane formaty: JPG, PNG, WEBP."></i>
+                </label>
+                <input type="file" id="defectPhotos" accept="image/jpeg,image/png,image/webp" multiple>
+                <div id="photoPreview" class="photo-preview"></div>
+                <small class="file-info">Maksymalnie 5 zdjęć</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="navigation-buttons">
+            <button type="button" id="backTo1" class="btn secondary">Wstecz</button>
+            <button type="button" id="toStep3" class="btn">Dalej</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="step-3" class="step section-card">
+        <h2>Dane kontaktowe</h2>
+        <form id="shippingForm">
+          <div class="form-group">
+            <label for="name">Imię i nazwisko *</label>
+            <input type="text" id="name" required />
+          </div>
+          <div class="form-group">
+            <label for="address">Adres *</label>
+            <input type="text" id="address" required />
+          </div>
+          <div class="form-group">
+            <label for="city">Miasto *</label>
+            <input type="text" id="city" required />
+          </div>
+          <div class="form-group">
+            <label for="postal">Kod pocztowy *</label>
+            <input type="text" id="postal" required />
+          </div>
+          <div class="form-group">
+            <label for="account">
+                Numer konta bankowego
+                <i class="fas fa-info-circle info-icon" data-tooltip="Podanie numeru konta jest opcjonalne. Jeśli go podasz, zwrot środków zostanie zrealizowany na to konto. W przeciwnym razie skontaktujemy się w celu ustalenia sposobu zwrotu środków."></i>
+            </label>
+            <input type="text" id="account" />
+          </div>
+          <div class="navigation-buttons">
+            <button type="button" id="backTo2" class="btn secondary">Wstecz</button>
+            <button type="submit" class="btn">Dalej</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="step-4" class="step section-card">
+        <h2>Podsumowanie zgłoszenia</h2>
+        <div id="summary" class="summary-details"></div>
+        
+        <p id="sendInfoMessage" class="message hidden"></p>
+        <div id="sendDataLoader" class="loader hidden"></div>
+        <div class="navigation-buttons">
+          <button type="button" id="submitSummary" class="btn">Wyślij zgłoszenie</button>
+          <button type="button" id="backTo3" class="btn secondary">Wstecz</button>
+        </div>
+      </section>
+
+      <section id="step-5" class="step section-card">
+        <h2>Zgłoszenie wysłane!</h2>
+        <p class="final-confirmation-text-intro">Twoje zgłoszenie zostało pomyślnie wysłane. <br>Poniżej znajdziesz numery, które mogą być potrzebne:</p>
+        
+        <div class="final-numbers-table">
+          <table>
+            <tr>
+              <td><strong><span id="returnOrComplaintLabel">Numer zwrotu:</span></strong></td>
+              <td><span id="generatedReturnNumber" class="highlight-number"></span> <i class="far fa-copy copy-icon" data-clipboard-target="#generatedReturnNumber" id="copyReturnNumberBtn" title="Skopiuj numer"></i></td>
+            </tr>
+            <tr>
+              <td><strong>Numer zamówienia:</strong></td>
+              <td><span id="finalSummaryOrderIdDisplay" class="highlight-number"></span> <i class="far fa-copy copy-icon" data-clipboard-target="#finalSummaryOrderIdDisplay" id="copyOrderIdBtn" title="Skopiuj numer zamówienia"></i></td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="final-confirmation-text-outro">
+          Potwierdzenie zgłoszenia otrzymasz w wiadomości email.
+          <br>
+          <span id="wygodnezwrotyInfo">Teraz przejdź do serwisu <b>wygodnezwroty.pl</b>, aby wygenerować etykietę zwrotną.</span>
+        </p>
+        <div class="navigation-buttons final-buttons" id="finalButtonsContainer">
+            <a href="https://wygodnezwroty.pl/gerlach" target="_blank" rel="noopener noreferrer" class="btn" id="wygodnezwrotyBtn" style="text-align: center;">Przejdź do wygodnezwroty.pl</a>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+</body>
+
+</html>

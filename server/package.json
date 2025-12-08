@@ -1,0 +1,14 @@
+{
+  "name": "magic-panel-server",
+  "version": "1.0.0",
+  "description": "API i panel WWW do obsługi zwrotów (Allegro + Wygodne Zwroty)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^4.19.2",
+    "mysql2": "^3.11.3"
+  }
+}

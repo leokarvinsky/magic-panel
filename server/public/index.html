@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerlach | Panel zwrotów</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <header class="header">
+        <div class="brand">
+            <div class="brand-logo"><i class="ph-bold ph-package"></i></div>
+            <span>Panel Zwrotów</span>
+        </div>
+        
+        <div class="search-bar-container">
+            <i class="ph-bold ph-magnifying-glass search-icon"></i>
+            <input
+                type="text"
+                class="search-bar-input"
+                id="quickSearch"
+                placeholder="Skanuj lub szukaj (Nr listu, Zamówienie, e-mail)...">
+            <div class="scan-hint">⌘K</div>
+        </div>
+
+        <div class="user-profile">
+            <div style="text-align: right;">
+                <div style="font-weight: 600; font-size: 0.9rem;">Magazyn</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">Panel zwrotów</div>
+            </div>
+            <div class="avatar">OS</div>
+        </div>
+    </header>
+
+    <!-- KPI Grid -->
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <span class="kpi-title">DO WERYFIKACJI</span>
+                <div class="kpi-icon"><i class="ph-fill ph-list-checks"></i></div>
+            </div>
+            <div class="kpi-value" id="kpi-todo">0</div>
+            <div class="kpi-trend trend-down">
+                <i class="ph-bold ph-arrow-down-right"></i> od rana
+            </div>
+        </div>
+        
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <span class="kpi-title">ZAAKCEPTOWANE DZIŚ</span>
+                <div class="kpi-icon"><i class="ph-fill ph-check-circle"></i></div>
+            </div>
+            <div class="kpi-value" id="kpi-accepted-today">0</div>
+            <div class="kpi-trend trend-up">
+                <i class="ph-bold ph-trend-up"></i> vs wczoraj
+            </div>
+        </div>
+        
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <span class="kpi-title">PROBLEMY / ERP</span>
+                <div class="kpi-icon kpi-icon-danger"><i class="ph-fill ph-warning-circle"></i></div>
+            </div>
+            <div class="kpi-value kpi-value-danger" id="kpi-erp-errors">0</div>
+            <div class="kpi-trend">Wymagają uwagi</div>
+        </div>
+    </div>
+
+    <!-- Status chips -->
+    <div class="status-chips" id="statusChips">
+        <button class="status-chip active" data-status="ALL">
+            <span class="status-dot-chip all"></span>
+            Wszystkie
+            <span class="status-chip-count" id="chip-ALL">0</span>
+        </button>
+        <button class="status-chip" data-status="ZGLOSZONY">
+            <span class="status-dot-chip zg"></span>
+            Zgłoszone
+            <span class="status-chip-count" id="chip-ZGLOSZONY">0</span>
+        </button>
+        <button class="status-chip" data-status="W_DRODZE">
+            <span class="status-dot-chip wd"></span>
+            W drodze
+            <span class="status-chip-count" id="chip-W_DRODZE">0</span>
+        </button>
+        <button class="status-chip" data-status="NA_MAGAZYNIE">
+            <span class="status-dot-chip nm"></span>
+            Na magazynie
+            <span class="status-chip-count" id="chip-NA_MAGAZYNIE">0</span>
+        </button>
+        <button class="status-chip" data-status="ZWERYFIKOWANY">
+            <span class="status-dot-chip zw"></span>
+            Zweryfikowane
+            <span class="status-chip-count" id="chip-ZWERYFIKOWANY">0</span>
+        </button>
+        <button class="status-chip" data-status="ZAKONCZONY">
+            <span class="status-dot-chip zk"></span>
+            Zakończone
+            <span class="status-chip-count" id="chip-ZAKONCZONY">0</span>
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-card">
+        <div class="filters-bar">
+            <select class="filter-select" id="filterSource">
+                <option value="ALL">Wszystkie źródła</option>
+                <option value="ALLEGRO">Allegro</option>
+                <option value="WZW">Sklep WZW</option>
+            </select>
+
+            <div class="filter-group">
+                <label class="filter-label">Data od</label>
+                <input type="date" class="filter-input" id="dateFrom">
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Data do</label>
+                <input type="date" class="filter-input" id="dateTo">
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Sortowanie</label>
+                <select class="filter-select" id="sortSelect">
+                    <option value="date_desc">Data ↓ (najnowsze)</option>
+                    <option value="date_asc">Data ↑ (najstarsze)</option>
+                    <option value="id_desc">ID ↓</option>
+                    <option value="id_asc">ID ↑</option>
+                </select>
+            </div>
+
+            <button class="btn btn-small" id="btnClearFilters">
+                Wyczyść filtry
+            </button>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 40px; text-align: center;">
+                            <input type="checkbox" id="selectAllCheckbox">
+                        </th>
+                        <th style="width: 140px;" data-sort="date">Data</th>
+                        <th style="width: 80px;" data-sort="id">ID</th>
+                        <th>List Przewozowy / Zamówienie</th>
+                        <th>Klient</th>
+                        <th style="text-align: right;">Status</th>
+                        <th style="width: 80px;"></th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- JS Injected -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="detailModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <div class="modal-title">
+                Zwrot <span class="modal-id">#<span id="mId"></span></span>
+                <span id="mSourceBadge" class="source-tag src-allegro">ALLEGRO</span>
+            </div>
+            <button id="btnCloseModal" class="modal-close-btn">
+                <i class="ph-bold ph-x"></i>
+            </button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="grid-info grid-info-2">
+                <div class="info-block">
+                    <div class="info-label">Klient</div>
+                    <div class="info-data" id="mCustomer">-</div>
+                    <div class="info-sub" id="mEmail">-</div>
+                    <div class="info-sub" id="mPhone">-</div>
+                </div>
+                <div class="info-block">
+                    <div class="info-label">Źródło i identyfikatory</div>
+                    <div class="info-row">
+                        <span class="info-pill-label">Źródło</span>
+                        <span class="info-pill-value" id="mSource">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-pill-label">ID zewnętrzne</span>
+                        <span class="info-pill-value" id="mExternalId">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-pill-label">Nr zwrotu (krótki)</span>
+                        <span class="info-pill-value" id="mReturnShort">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-pill-label">Nr zwrotu wewnętrzny</span>
+                        <span class="info-pill-value" id="mInternalReturn">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-info grid-info-3">
+                <div class="info-block">
+                    <div class="info-label">Przesyłka</div>
+                    <div class="info-data" id="mWaybill">-</div>
+                    <div class="info-sub" id="mCourier">-</div>
+                </div>
+                <div class="info-block">
+                    <div class="info-label">Zamówienie</div>
+                    <div class="info-data" id="mOrder">-</div>
+                    <div class="info-sub" id="mShopOrder">-</div>
+                </div>
+                <div class="info-block">
+                    <div class="info-label">Daty</div>
+                    <div class="info-row">
+                        <span class="info-pill-label">Utworzono (źródło)</span>
+                        <span class="info-pill-value" id="mCreatedExt">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-pill-label">Otrzymano</span>
+                        <span class="info-pill-value" id="mReceivedAt">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-pill-label">Zmiana ERP</span>
+                        <span class="info-pill-value" id="mErpUpdated">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-info grid-info-3">
+                <div class="info-block">
+                    <div class="info-label">Status zewnętrzny</div>
+                    <div class="status-badge status-badge-large" id="mStatusExternalBadge">
+                        <span class="status-dot"></span>
+                        <span id="mStatusExternal">-</span>
+                    </div>
+                </div>
+                <div class="info-block">
+                    <div class="info-label">Status wewnętrzny</div>
+                    <select id="mInternalStatusSelect" class="status-select">
+                        <option value="ZGLOSZONY">ZGLOSZONY</option>
+                        <option value="W_DRODZE">W_DRODZE</option>
+                        <option value="NA_MAGAZYNIE">NA_MAGAZYNIE</option>
+                        <option value="ZWERYFIKOWANY">ZWERYFIKOWANY</option>
+                        <option value="ZAKONCZONY">ZAKONCZONY</option>
+                    </select>
+                </div>
+                <div class="info-block">
+                    <div class="info-label">Status ERP</div>
+                    <select id="mErpStatusSelect" class="status-select">
+                        <option value="NOWY">NOWY</option>
+                        <option value="DO_IMPORTU">DO_IMPORTU</option>
+                        <option value="ZAIMPORTOWANY">ZAIMPORTOWANY</option>
+                        <option value="BLAD">BLAD</option>
+                    </select>
+                </div>
+            </div>
+
+            <h4 class="items-title">Produkty do weryfikacji</h4>
+            <div class="items-list" id="mItemsList">
+                <!-- Items injected here -->
+            </div>
+            
+            <button class="btn btn-secondary btn-full" id="btnAddManualItem">
+                <i class="ph-bold ph-plus"></i> Dodaj produkt niezgłoszony
+            </button>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-danger" id="btnReject">Odrzuć</button>
+            <button class="btn btn-secondary" id="btnPartial">Częściowo</button>
+            <button class="btn btn-primary" id="btnAccept">Zatwierdź zwrot</button>
+            <button class="btn btn-primary btn-outline" id="btnSaveStatuses">Zapisz statusy</button>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Bulk Bar -->
+<div class="bulk-bar" id="bulkBar">
+    <div class="bulk-bar-left">
+        <span class="bulk-counter" id="bulkCount">0</span>
+        <span class="bulk-text">wybranych elementów</span>
+    </div>
+    <div class="bulk-actions">
+        <button class="btn-bulk" id="btnBulkAccept">Zatwierdź masowo</button>
+        <button class="btn-bulk cancel" id="btnBulkClear">Anuluj</button>
+    </div>
+</div>
+
+</body>
+</html>

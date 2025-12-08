@@ -1,0 +1,14 @@
+{
+  "name": "magic-panel-allegro-sync",
+  "version": "1.0.0",
+  "description": "Synchronizacja zwrotów Allegro do panelu zwrotów",
+  "main": "index.js",
+  "scripts": {
+    "sync": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "dotenv": "^17.2.3",
+    "qs": "^6.12.1"
+  }
+}

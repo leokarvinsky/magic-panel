@@ -1,0 +1,12 @@
+{
+  "name": "magic-panel-allekurier-sync",
+  "version": "1.0.0",
+  "description": "Synchronizacja zwrotów z Wygodne Zwroty / AlleKurier do panelu zwrotów",
+  "main": "wygodnezwroty-sync.js",
+  "scripts": {
+    "sync": "node wygodnezwroty-sync.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3"
+  }
+}
